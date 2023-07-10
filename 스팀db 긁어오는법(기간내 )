@@ -1,0 +1,25 @@
+from bs4 import BeautifulSoup
+#https://steamdb.info/topsellers/에서 가져옴
+with open('텍스트파일.txt', 'r', encoding='utf-8') as file:
+    html = file.read()
+
+soup = BeautifulSoup(html, 'html.parser')
+
+games = []
+
+rows = soup.find_all('tr', class_='app')
+for row in rows:
+    game = {}
+    game['app_id'] = row['data-appid']
+    game['name'] = row.select_one('td a').text
+    game['total_players'] = row.select_one('td[data-sort]:nth-child(5)').text
+    game['online_players'] = row.select_one('td[data-sort]:nth-child(6)').text
+    games.append(game)
+
+# Result output
+for game in games:
+    print("Game ID:", game['app_id'])
+    print("Game Name:", game['name'])
+    print("Total Players:", game['total_players'])
+    print("Online Players:", game['online_players'])
+    print("------------------------")
